@@ -17,7 +17,7 @@ const readline = require('readline').createInterface({
 //Asks what book user wants to look up
 let book;
 
-initialPrompt() => {
+queryPrompt() => {
     readline.question(`What book are you looking for? `, (book) => {
     //calls API with the search string
     console.log(book);
