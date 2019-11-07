@@ -27,8 +27,8 @@ initialPrompt() => {
 }
 
 //Calls Google books API with the search string and API key
-callAPI()=> {
-    let key = //API key here
+function callAPI() {
+    var key = AIzaSyAr6Fn1r0npIrwpYslR-OIpcHlzHxTZl7U
 
     request('https://www.googleapis.com/books/v1//volumes?q=' + book + '&fields=title, author, publisher&maxResults=5' + '&key=' + key, { json: true }, (err, res, data) => {
   if (err) { return console.log(err); }
