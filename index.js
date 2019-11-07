@@ -8,26 +8,29 @@
 var request = require('request');
 var fs = require('fs');
 require('dotenv').config();
+var inquirer = require('inquirer');
 
 
 //Requires the readline module for taking user input
 var readline = require('readline').createInterface({
     input: process.stdin,
     output: process.stdout
-})
+});
 
-queryPrompt()
+queryPrompt();
 
 //Asks what book user wants to look up
 function queryPrompt() {
     var book;
 
     readline.question(`What book are you looking for? `, function(book) {
-    //calls API with the search string
-    callAPI(book);
-    readline.close()
-    })
-}
+ 
+            //calls API with the search string
+        callAPI(book);
+        readline.close()
+    });
+    }
+
 
 //Calls Google books API with the search string and API key
 function callAPI(book) {
@@ -40,19 +43,37 @@ function callAPI(book) {
     console.log(book.volumeInfo.authors)
     console.log(book.volumeInfo.publisher)
   }) 
- // promptSave();
+    promptSave(book);
 });
 }
-/*
-//Asks user what book to save to a "Reading List"
-function promptSave() {
-    readline.question(`Which book do you want to save in your reading list? `, (book) => {
-        //calls function to save book to reading list
-        saveReadingList();
-        readline.close()
-    })
-}
 
+//Asks user what book to save to a "Reading List"
+   var bookSelector = new Promise((resolve, reject) function addBookChoices() {
+    var bookChoices=[],   
+            bookData = {
+            title: book.volumeInfo.title,
+            authors: book.volumeInfo.authors,
+            publisher: book.volumeInfo.publisher,
+   } 
+    bookChoices.push(bookData);
+        resolve(bookChoices);
+    }
+);
+        bookSelector.then(function(bookChoices) {
+            inquirer.prompt([
+                {
+                    type: 'list',
+                    message: 'Which book do you want to save to your reading list?',
+                    choices: bookChoices
+                    name: 'book'         
+        }]).then(function(selected){
+            console.log(JSON.stringify(answers, null, '  '));
+        });
+    });
+            
+
+
+/*
 //Takes that response and pushes the book onto an array
 function saveReadingList() {
     let readingList = [];
