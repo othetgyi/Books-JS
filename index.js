@@ -16,32 +16,34 @@ var readline = require('readline').createInterface({
     output: process.stdout
 })
 
+queryPrompt()
+
 //Asks what book user wants to look up
 function queryPrompt() {
     var book;
 
     readline.question(`What book are you looking for? `, function(book) {
     //calls API with the search string
-    console.log(book);
-    //callAPI();
+    callAPI(book);
     readline.close()
     })
 }
 
 //Calls Google books API with the search string and API key
-/*
-function callAPI() {
+function callAPI(book) {
     var key = process.env.GOOGLE_BOOKS_API; 
-    console.log(process.env.GOOGLE_BOOKS_API);
-
-    console.log('Your API key is: ', process.env.GOOGLE_BOOKS_API)
-    request('https://www.googleapis.com/books/v1//volumes?q=' + book + '&fields=title, author, publisher&maxResults=5' + '&key=' + key, { json: true }, (err, res, data) => {
+    request('https://www.googleapis.com/books/v1/volumes?q=' + book + '&maxResults=5' + '&key=' + key, { json: true }, (err, res, data) => {
   if (err) { return console.log(err); }
-  console.log(data);
+  
+  data.items.forEach(function(book) {
+    console.log(book.volumeInfo.title)
+    console.log(book.volumeInfo.authors)
+    console.log(book.volumeInfo.publisher)
+  }) 
  // promptSave();
 });
 }
-
+/*
 //Asks user what book to save to a "Reading List"
 function promptSave() {
     readline.question(`Which book do you want to save in your reading list? `, (book) => {
