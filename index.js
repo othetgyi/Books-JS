@@ -8,7 +8,7 @@
 var request = require('request');
 var fs = require('fs');
 require('dotenv').config();
-console.log(process.env.GOOGLE_BOOKS_API);
+
 
 //Requires the readline module for taking user input
 var readline = require('readline').createInterface({
@@ -23,7 +23,7 @@ function queryPrompt() {
     readline.question(`What book are you looking for? `, function(book) {
     //calls API with the search string
     console.log(book);
-    callAPI();
+    //callAPI();
     readline.close()
     })
 }
@@ -32,6 +32,8 @@ function queryPrompt() {
 /*
 function callAPI() {
     var key = process.env.GOOGLE_BOOKS_API; 
+    console.log(process.env.GOOGLE_BOOKS_API);
+
     console.log('Your API key is: ', process.env.GOOGLE_BOOKS_API)
     request('https://www.googleapis.com/books/v1//volumes?q=' + book + '&fields=title, author, publisher&maxResults=5' + '&key=' + key, { json: true }, (err, res, data) => {
   if (err) { return console.log(err); }
