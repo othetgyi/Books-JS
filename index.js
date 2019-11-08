@@ -63,7 +63,6 @@ function saveBook(book){
     fs.writeFile( "readinglist.json", JSON.stringify(readingList), "utf8", function(){});
     viewReadingList();
 }
-
     //add new book to it
     //save new list
 
