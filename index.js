@@ -67,7 +67,6 @@ function saveBook(book){
     //add new book to it
     //save new list
 
-
 //Gives user option to view "Reading List"
 function viewReadingList() {
     readline.question(`Do you want to view your reading list? Enter Y or N `, function(choiceInput) {
@@ -82,4 +81,3 @@ function viewReadingList() {
         readline.close();
     });
 }
-
