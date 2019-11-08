@@ -5,27 +5,28 @@
 //4.) Program asks user which one to put on the bookshelf
 //5.) Program stores those books by pushing the new book onto the end of the array
 
-const request = require('request');
-const fs = require('fs');
+var request = require('request');
+var fs = require('fs');
 
 //Requires the readline module for taking user input
-const readline = require('readline').createInterface({
+var readline = require('readline').createInterface({
     input: process.stdin,
     output: process.stdout
 })
 
 //Asks what book user wants to look up
-let book;
+function queryPrompt() {
+    var book;
 
-initialPrompt() => {
-    readline.question(`What book are you looking for? `, (book) => {
+    readline.question(`What book are you looking for? `, function(book) {
     //calls API with the search string
     console.log(book);
-    callAPI();
+    //callAPI();
     readline.close()
     })
 }
-
+//getting SyntaxError: Invalid or unexpected token
+/*
 //Calls Google books API with the search string and API key
 function callAPI() {
     var key = AIzaSyAr6Fn1r0npIrwpYslR-OIpcHlzHxTZl7U
@@ -33,12 +34,12 @@ function callAPI() {
     request('https://www.googleapis.com/books/v1//volumes?q=' + book + '&fields=title, author, publisher&maxResults=5' + '&key=' + key, { json: true }, (err, res, data) => {
   if (err) { return console.log(err); }
   console.log(data);
- // saveQuestion();
+ // promptSave();
 });
 }
-/*
+
 //Asks user what book to save to a "Reading List"
-saveQuestion() => {
+function promptSave() {
     readline.question(`Which book do you want to save in your reading list? `, (book) => {
         //calls function to save book to reading list
         saveReadingList();
@@ -47,7 +48,7 @@ saveQuestion() => {
 }
 
 //Takes that response and pushes the book onto an array
-saveReadingList() => {
+function saveReadingList() {
     let readingList = [];
     readingList.push(1);
     viewReadingList();
@@ -55,7 +56,7 @@ saveReadingList() => {
 }
 
 //Gives user option to view "Reading List"
-viewReadingList() => {
+function viewReadingList() {
     readline.question(`Do you want to view your reading list? Enter Y or N `, (book) => {
         if ('y') {
             console.log(readingList);
