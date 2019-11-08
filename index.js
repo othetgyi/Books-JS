@@ -45,6 +45,7 @@ function callAPI(book) {
 });
 }
 
+//Asks user what book to save to the reading list
 function bookChoices(data) {
     readline.question(`Which books would you like to save to your reading list? Type one of the numbers above. `, function(input) {
         var book = data.items[input];
@@ -57,6 +58,7 @@ function bookChoices(data) {
 });
 }
 
+//Saves selected book to a JSON file
 function saveBook(book){
     var readingList = [];
     readingList.push(book);
