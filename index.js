@@ -27,7 +27,7 @@ function queryPrompt() {
  
             //calls API with the search string
         callAPI(book);
-        readline.close()
+        //readline.close()
     });
     }
 
@@ -37,50 +37,44 @@ function callAPI(book) {
     var key = process.env.GOOGLE_BOOKS_API; 
     request('https://www.googleapis.com/books/v1/volumes?q=' + book + '&maxResults=5' + '&key=' + key, { json: true }, (err, res, data) => {
   if (err) { return console.log(err); }
-  
-  data.items.forEach(function(book) {
+
+  data.items.forEach(function(book, index) {
     console.log(book.volumeInfo.title)
     console.log(book.volumeInfo.authors)
     console.log(book.volumeInfo.publisher)
+    console.log(index);
   }) 
-    promptSave(book);
+    bookChoices(data);
+
 });
 }
 
-//Asks user what book to save to a "Reading List"
-   var bookSelector = new Promise((resolve, reject) function addBookChoices() {
-    var bookChoices=[],   
-            bookData = {
-            title: book.volumeInfo.title,
-            authors: book.volumeInfo.authors,
-            publisher: book.volumeInfo.publisher,
-   } 
-    bookChoices.push(bookData);
-        resolve(bookChoices);
-    }
-);
-        bookSelector.then(function(bookChoices) {
-            inquirer.prompt([
-                {
-                    type: 'list',
-                    message: 'Which book do you want to save to your reading list?',
-                    choices: bookChoices
-                    name: 'book'         
-        }]).then(function(selected){
-            console.log(JSON.stringify(answers, null, '  '));
-        });
-    });
-            
+function bookChoices(data) {
+    readline.question(`Which books would you like to save to your reading list? Type one of the numbers above. `, function(input) {
+        var book = data.items[input];
+        console.log(`You've chosen ${input}.`);
+        //console.log(data.items[input]);
+        console.log(book.volumeInfo.title);
+        console.log(book.volumeInfo.authors);
+        console.log(book.volumeInfo.publisher);
+        readline.close();
+        saveBook(book);
 
+});
+}
+
+function saveBook(book){
+    var readingList = [];
+    readingList.push(book);
+
+    
+    fs.writeFile( "readinglist.json", JSON.stringify(readingList), "utf8", function(){});
+    //load reading list
+    //add new book to it
+    //save new list
+}
 
 /*
-//Takes that response and pushes the book onto an array
-function saveReadingList() {
-    let readingList = [];
-    readingList.push(1);
-    viewReadingList();
-    
-}
 
 //Gives user option to view "Reading List"
 function viewReadingList() {
