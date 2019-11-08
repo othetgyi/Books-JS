@@ -10,28 +10,25 @@ var fs = require('fs');
 require('dotenv').config();
 var inquirer = require('inquirer');
 
-
 //Requires the readline module for taking user input
 var readline = require('readline').createInterface({
     input: process.stdin,
     output: process.stdout
 });
 
-queryPrompt();
+
 
 //Asks what book user wants to look up
 function queryPrompt() {
     var book;
 
     readline.question(`What book are you looking for? `, function(book) {
- 
-            //calls API with the search string
         callAPI(book);
         //readline.close()
     });
-    }
+    };
 
-
+    queryPrompt();
 //Calls Google books API with the search string and API key
 function callAPI(book) {
     var key = process.env.GOOGLE_BOOKS_API; 
@@ -43,9 +40,8 @@ function callAPI(book) {
     console.log(book.volumeInfo.authors)
     console.log(book.volumeInfo.publisher)
     console.log(index);
-  }) 
+  }); 
     bookChoices(data);
-
 });
 }
 
@@ -53,40 +49,37 @@ function bookChoices(data) {
     readline.question(`Which books would you like to save to your reading list? Type one of the numbers above. `, function(input) {
         var book = data.items[input];
         console.log(`You've chosen ${input}.`);
-        //console.log(data.items[input]);
         console.log(book.volumeInfo.title);
         console.log(book.volumeInfo.authors);
         console.log(book.volumeInfo.publisher);
-        readline.close();
+       // readline.close();
         saveBook(book);
-
 });
 }
 
 function saveBook(book){
     var readingList = [];
     readingList.push(book);
-
-    
     fs.writeFile( "readinglist.json", JSON.stringify(readingList), "utf8", function(){});
-    //load reading list
-    //add new book to it
-    //save new list
+    viewReadingList();
 }
 
-/*
+    //add new book to it
+    //save new list
+
 
 //Gives user option to view "Reading List"
 function viewReadingList() {
-    readline.question(`Do you want to view your reading list? Enter Y or N `, (book) => {
-        if ('y') {
+    readline.question(`Do you want to view your reading list? Enter Y or N `, function(choiceInput) {
+        if (choiceInput="Y") {
+            console.log(`You have chosen to see your reading list.`);
+            var bookData = fs.readFilesSync('readinglist.json');
+            var readingList = JSON.parse(bookData);
             console.log(readingList);
-        }
-       else {
-           initialPrompt();
+        }   else {
+           queryPrompt();
        }
-        readline.close()
-        initialPrompt();
-    })
+        readline.close();
+    });
 }
-*/
+
