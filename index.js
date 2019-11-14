@@ -8,7 +8,7 @@
 var request = require('request');
 var fs = require('fs');
 require('dotenv').config();
-var inquirer = require('inquirer');
+
 
 //Requires the readline module for taking user input
 var readline = require('readline').createInterface({
@@ -23,12 +23,16 @@ function queryPrompt() {
     var book;
 
     readline.question(`What book are you looking for? `, function(book) {
-        console.log(`You\'re looking for ${book} books.`)
+        console.log(`Here is a list of five ${book} books.`)
+        callAPI(book); 
         //readline.close()
     });
-    };
-    queryPrompt();
+  };
     
+queryPrompt();
+  
+
+
 //Calls Google books API with the search string and API key
 function callAPI(book) {
     var key = process.env.GOOGLE_BOOKS_API; 
@@ -43,10 +47,11 @@ function callAPI(book) {
     console.log(book.volumeInfo.publisher)
     console.log(index);
   }); 
-};
+    //bookChoices(data);
+}});
+}
 
 
-callAPI(book);
 
 /*
 //Asks user what book to save to the reading list
