@@ -23,28 +23,32 @@ function queryPrompt() {
     var book;
 
     readline.question(`What book are you looking for? `, function(book) {
-        callAPI(book);
+        console.log(`You\'re looking for ${book} books.`)
         //readline.close()
     });
     };
-
     queryPrompt();
+    
 //Calls Google books API with the search string and API key
 function callAPI(book) {
     var key = process.env.GOOGLE_BOOKS_API; 
     request('https://www.googleapis.com/books/v1/volumes?q=' + book + '&maxResults=5' + '&key=' + key, { json: true }, (err, res, data) => {
-  if (err) { return console.log(err); }
-
+  if (err) { 
+      console.log(err); 
+      console.log('The API call has failed. Please try again.');
+    } else {
   data.items.forEach(function(book, index) {
     console.log(book.volumeInfo.title)
     console.log(book.volumeInfo.authors)
     console.log(book.volumeInfo.publisher)
     console.log(index);
   }); 
-    bookChoices(data);
-});
-}
+};
 
+
+callAPI(book);
+
+/*
 //Asks user what book to save to the reading list
 function bookChoices(data) {
     readline.question(`Which books would you like to save to your reading list? Type one of the numbers above. `, function(input) {
@@ -57,6 +61,8 @@ function bookChoices(data) {
         saveBook(book);
 });
 }
+
+    bookChoices(data);
 
 //Saves selected book to a JSON file
 function saveBook(book){
@@ -82,3 +88,4 @@ function viewReadingList() {
         readline.close();
     });
 }
+*/
