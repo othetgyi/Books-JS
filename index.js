@@ -1,14 +1,25 @@
 //App functions:
-//1.) Ask what book user wants to look up
-//2.) Call the Google Books API with the query
-//3.) Prints out 5 choices of books with author, title and publishing company
-//4.) Program asks user which one to put on the bookshelf
-//5.) Program stores those books by pushing the new book onto the end of the array
+
+
+
+
 
 var request = require('request');
 var fs = require('fs');
 require('dotenv').config();
 
+
+function main(){
+    //1.) Ask what book user wants to look up
+    getUserInput(callAPI);
+
+    //3.) Prints out 5 choices of books with author, title and publishing company
+   // bookChoices();
+    //4.) Program asks user which one to put on the bookshelf
+    //savedBook();
+    //5.) Program stores those books by pushing the new book onto the end of the array
+    //viewReadingList();
+}
 
 //Requires the readline module for taking user input
 var readline = require('readline').createInterface({
@@ -16,44 +27,36 @@ var readline = require('readline').createInterface({
     output: process.stdout
 });
 
-
-
 //Asks what book user wants to look up
-function queryPrompt() {
-    var book;
-
-    readline.question(`What book are you looking for? `, function(book) {
-        console.log(`Here is a list of five ${book} books.`)
-        callAPI(book); 
-        //readline.close()
-    });
+var getUserInput = function queryPrompt(callback) {
+    readline.question(`What book are you looking for? `, callback);
   };
     
-queryPrompt();
-  
-
-
 //Calls Google books API with the search string and API key
-function callAPI(book) {
+function callAPI(searchTerm) {
+    console.log(searchTerm)/*
     var key = process.env.GOOGLE_BOOKS_API; 
-    request('https://www.googleapis.com/books/v1/volumes?q=' + book + '&maxResults=5' + '&key=' + key, { json: true }, (err, res, data) => {
-  if (err) { 
+    request('https://www.googleapis.com/books/v1/volumes?q=' + searchTerm + '&maxResults=5' + '&key=' + key, { json: true }, (err, res, data) => {
+ /* if (err) { 
       console.log(err); 
       console.log('The API call has failed. Please try again.');
     } else {
+        console.log(data);*/
+     /*   
   data.items.forEach(function(book, index) {
     console.log(book.volumeInfo.title)
     console.log(book.volumeInfo.authors)
     console.log(book.volumeInfo.publisher)
     console.log(index);
-  }); 
+  }); */
     //bookChoices(data);
-}});
-}
+//})
+};
 
-
+//callAPI(searchTerm); 
 
 /*
+
 //Asks user what book to save to the reading list
 function bookChoices(data) {
     readline.question(`Which books would you like to save to your reading list? Type one of the numbers above. `, function(input) {
@@ -94,3 +97,4 @@ function viewReadingList() {
     });
 }
 */
+main();
