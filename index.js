@@ -1,9 +1,5 @@
 //App functions:
 
-
-
-
-
 var request = require('request');
 var fs = require('fs');
 require('dotenv').config();
@@ -11,7 +7,7 @@ require('dotenv').config();
 
 function main(){
     //1.) Ask what book user wants to look up
-    getUserInput(callAPI);
+    getUserInput(validateInput);
 
     //3.) Prints out 5 choices of books with author, title and publishing company
    // bookChoices();
@@ -27,31 +23,41 @@ var readline = require('readline').createInterface({
     output: process.stdout
 });
 
-//Asks what book user wants to look up
-var getUserInput = function queryPrompt(callback) {
-    readline.question(`What book are you looking for? `, callback);
+//Asks what book the user wants to look up
+var getUserInput = function (callback) {
+    readline.question(`What book are you looking for? `, callback) 
+    //add if else statement if user just hits enter
   };
-    
+//Validates input 
+var validateInput = function (callback){
+    if (callback){
+        console.log(`You are looking for ${callback} books.`)
+    } else {
+        console.log('Please enter one or more keywords for the books you\'re looking for.')
+    }
+}
+
 //Calls Google books API with the search string and API key
+/*
 function callAPI(searchTerm) {
-    console.log(searchTerm)/*
+   
     var key = process.env.GOOGLE_BOOKS_API; 
     request('https://www.googleapis.com/books/v1/volumes?q=' + searchTerm + '&maxResults=5' + '&key=' + key, { json: true }, (err, res, data) => {
- /* if (err) { 
+    
+  if (err) { 
       console.log(err); 
       console.log('The API call has failed. Please try again.');
     } else {
-        console.log(data);*/
-     /*   
+         
   data.items.forEach(function(book, index) {
     console.log(book.volumeInfo.title)
     console.log(book.volumeInfo.authors)
     console.log(book.volumeInfo.publisher)
     console.log(index);
-  }); */
+  }); 
     //bookChoices(data);
 //})
-};
+}})};
 
 //callAPI(searchTerm); 
 
