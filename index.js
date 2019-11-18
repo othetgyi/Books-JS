@@ -1,8 +1,13 @@
-//16/11notes: Program will ask for input but then prints out the argument of validateInput in function main. Also, it ignores the else if the user just hits enter without typing in anything.
+//16/11 notes: Program will ask for input but then prints out the argument of validateInput in function main. Also, it ignores the else if the user just hits enter without typing in anything. The third problem is it says that "callback()" is not a function.
+
 
 var request = require('request');
 var fs = require('fs');
 require('dotenv').config();
+
+/*function main(input, callback){
+    getUserInput(validateInput, callAPI, callback)
+}*/
 
 function main(input, callback){
     getUserInput(function() {
@@ -29,17 +34,20 @@ var readline = require('readline').createInterface({
 
 //Asks what kind of book the user wants to look up
 var getUserInput = function(input, callback) {
-    readline.question(`What kinds of books are you looking for? `, input, callback); 
-};
+    readline.question(`What kinds of books are you looking for? `, input, callback);
+    console.log('getUserInput is finished') 
+   };
 
 //Validates user input 
 var validateInput = function(input, callback){
     
     if (input){
         console.log(`You're looking for ${input} books.`)
+        console.log('validateInput is finished')
         } else {
         console.log('Please enter one or more keywords for the books you\'re looking for.')
     }
+    callback(input);
 }
 
 //Calls Google books API with the search string and API key
@@ -52,7 +60,7 @@ var callAPI = function(input, callback) {
       console.log(err); 
       console.log('The API call has failed. Please try again.');
     } else {
-         
+         console.log('callAPI is finished')
   data.items.forEach(function(book, index) {
     console.log(book.volumeInfo.title)
     console.log(book.volumeInfo.authors)
@@ -61,7 +69,7 @@ var callAPI = function(input, callback) {
   }); 
     //bookChoices(data);
 //})
-//callback(input);
+callback(input);
 }})};
 
 
@@ -114,4 +122,4 @@ function viewReadingList() {
     });
 }
 */
-main(getUserInput, validateInput);
+main(getUserInput, validateInput, callAPI);
