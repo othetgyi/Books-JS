@@ -5,18 +5,13 @@ var request = require('request');
 var fs = require('fs');
 require('dotenv').config();
 
-/*function main(input, callback){
-    getUserInput(validateInput, callAPI, callback)
-}*/
-
-function main(input, callback){
+function main(){
     getUserInput(function() {
         validateInput(function(){
-            callAPI(callback);
-        });
+            callAPI((input) => console.log(input));
+     });
     });
-};
-
+}
 //Requires the readline module for taking user input
 var readline = require('readline').createInterface({
     input: process.stdin,
@@ -33,28 +28,28 @@ var readline = require('readline').createInterface({
     //viewReadingList();
 
 //Asks what kind of book the user wants to look up
-var getUserInput = function(input, callback) {
-    readline.question(`What kinds of books are you looking for? `, input, callback);
-    console.log('getUserInput is finished') 
-   };
+var getUserInput = function(callback) {
+    readline.question(`What kinds of books are you looking for? `, callback);
+    }; 
 
 //Validates user input 
-var validateInput = function(input, callback){
+var validateInput = function(callback){
     
-    if (input){
-        console.log(`You're looking for ${input} books.`)
+    if (callback){
+        console.log(callback)
+        console.log(`You're looking for ${callback} books.`)
         console.log('validateInput is finished')
         } else {
         console.log('Please enter one or more keywords for the books you\'re looking for.')
     }
-    callback(input);
+    callback();
 }
 
 //Calls Google books API with the search string and API key
-var callAPI = function(input, callback) {
+var callAPI = function(callback) {
    
     var key = process.env.GOOGLE_BOOKS_API; 
-    request('https://www.googleapis.com/books/v1/volumes?q=' + input + '&maxResults=5' + '&key=' + key, { json: true }, (err, res, data) => {
+    request('https://www.googleapis.com/books/v1/volumes?q=' + callback + '&maxResults=5' + '&key=' + key, { json: true }, (err, res, data) => {
     
   if (err) { 
       console.log(err); 
@@ -69,12 +64,12 @@ var callAPI = function(input, callback) {
   }); 
     //bookChoices(data);
 //})
-callback(input);
+callback();
 }})};
 
 
 
-/* 
+/*
 
 //Asks user what book to save to the reading list
 function bookChoices(data) {
@@ -93,7 +88,7 @@ function bookChoices(data) {
 });
 }
 
-   bookChoices(data);
+/*
 
 //Saves selected book to a JSON file
 function saveBook(book){
@@ -122,4 +117,4 @@ function viewReadingList() {
     });
 }
 */
-main(getUserInput, validateInput, callAPI);
+main();
