@@ -32,7 +32,7 @@ var rl = readline.createInterface({
 
 //Asks what kind of book the user wants to look up
 var getSearchTerm = function(searchTerm, callback) {
-    rl.question('What books are you looking for? ', function(searchTerm) {
+    rl.question('What books are you looking for? ', function(searchTerm, callback) {
         console.log(`You're looking for ${searchTerm} books.`);
         console.log('Function getSearchTerm is finished.');
         });
