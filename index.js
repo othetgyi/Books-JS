@@ -1,24 +1,11 @@
 //16/11 notes: Program will ask for input but then prints out the argument of validateInput in function main. Also, it ignores the else if the user just hits enter without typing in anything. The third problem is it says that "callback()" is not a function.
 
-
 var request = require('request');
 var fs = require('fs');
 require('dotenv').config();
 
-function main(){
-    getUserInput(function() {
-        validateInput(function(){
-            callAPI((input) => console.log(input));
-     });
-    });
-}
-//Requires the readline module for taking user input
-var readline = require('readline').createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
 
-    //1.) Ask what book user wants to look up
+ //1.) Ask what book user wants to look up
     //getUserInput(validateInput);
       //3.) Prints out 5 choices of books with author, title and publishing company
    // bookChoices();
@@ -27,24 +14,48 @@ var readline = require('readline').createInterface({
     //5.) Program stores those books by pushing the new book onto the end of the array
     //viewReadingList();
 
-//Asks what kind of book the user wants to look up
-var getUserInput = function(callback) {
-    readline.question(`What kinds of books are you looking for? `, callback);
-    }; 
-
-//Validates user input 
-var validateInput = function(callback){
-    
-    if (callback){
-        console.log(callback)
-        console.log(`You're looking for ${callback} books.`)
-        console.log('validateInput is finished')
-        } else {
-        console.log('Please enter one or more keywords for the books you\'re looking for.')
-    }
-    callback();
+function main(){
+    getSearchTerm(function(){
+        validateSearchTerm(function(){
+            printIt(searchTerm);
+        });
+    });
 }
 
+//Requires the readline module for taking user input
+var readline = require('readline');
+
+var rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+//Asks what kind of book the user wants to look up
+var getSearchTerm = function(searchTerm, callback) {
+    rl.question('What books are you looking for? ', function(searchTerm, callback){
+        console.log(`You're looking for ${searchTerm} books.`);
+        console.log('Function getSearchTerm is finished.');
+    }); 
+    callback(searchTerm);
+}
+
+//Validates user input 
+var validateSearchTerm = function(searchTerm, callback){
+    if (searchTerm !== '' && searchTerm !== null){
+        console.log(searchTerm)
+        console.log(`You're looking for ${searchTerm} books.`)
+        console.log('validateSearchTerm is finished')
+        } else {
+        console.log('Please enter one or more keywords for the books you\'re looking for.')
+        }
+        callback(searchTerm)
+    }
+
+//Placeholder function to check other functions work properly
+var printIt = function(searchTerm) {
+    console.log(searchTerm);
+}
+/*
 //Calls Google books API with the search string and API key
 var callAPI = function(callback) {
    
