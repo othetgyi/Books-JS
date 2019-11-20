@@ -1,4 +1,4 @@
-//16/11 notes: Program will ask for input but then prints out the argument of validateInput in function main. Also, it ignores the else if the user just hits enter without typing in anything. The third problem is it says that "callback()" is not a function.
+//20/11: Am I doing the separation of concerns properly in callAPI, filterResults and saveBook?
 
 var request = require('request');
 var fs = require('fs');
@@ -77,29 +77,27 @@ var filterResults = function(data, callback) {
     });
 }
 
-//Placeholder function to check other functions work properly
-var printIt = function(/*searchTerm*/) {
-    console.log('App has finished');
-}
-/*
 //Asks user what book to save to the reading list
 function saveBook(data, callback) {
-    rl.question(`Which book do you want to save to your reading list? Type the number that corresponds to it. `, function(number) {
-        if (number != '' || number < 0 || number > 4) {
-            rl.question(`Please enter a number from 0 to 4. `, function(number) {
-                callback(number);
-            } else {
-                var book = data.items[number];
+    rl.question(`Which book do you want to save to your reading list? Type the number that corresponds to it. `, function(number, book) {
+        if (number != '' && number >= 0 || number <= 4) {
+            var book = data.items[number];
                 console.log(`You've chosen ${number}.`);
                 console.log(book.volumeInfo.title);
                 console.log(book.volumeInfo.authors);
                 console.log(book.volumeInfo.publisher);
-            });
+        } else {    
+            rl.question(`Please enter a number from 0 to 4. `, function(number) {
+                callback(number);
+           });
         };
     });
 }
 
-
+//Placeholder function to check other functions work properly
+var printIt = function(/*searchTerm*/) {
+    console.log('App has finished');
+}
 
 /*
 
