@@ -17,8 +17,12 @@ require('dotenv').config();
 function main(){
     getSearchTerm(function(searchTerm){
         validateSearchTerm(searchTerm, function(searchTerm){
-            callAPI(searchTerm, function(searchTerm){
-                printIt(searchTerm);
+            callAPI(searchTerm, function(data){
+                filterResults(data, function(data){
+                    saveBook(data, function(data){
+                        printIt(data);
+                    });
+                });
             });
         });
     });
@@ -53,45 +57,49 @@ var validateSearchTerm = function(searchTerm, callback){
 
 //Calls Google books API with the search string and API key
 var callAPI = function(searchTerm, callback) {
-   var key = process.env.GOOGLE_BOOKS_API; 
+    var key = process.env.GOOGLE_BOOKS_API; 
     request('https://www.googleapis.com/books/v1/volumes?q=' + searchTerm + '&maxResults=5' + '&key=' + key, { json: true }, (err, res, data) => {
     if (err) { 
       console.log(err); 
       console.log('The API call has failed. Please try again.');
     } else {
-    data.items.forEach(function(book, index) {
-    console.log(book.volumeInfo.title)
-    console.log(book.volumeInfo.authors)
-    console.log(book.volumeInfo.publisher)
-    console.log(index);
-    callback(searchTerm);
-  });  
-}})};
+    callback(data);
+  };  
+})};
 
+var filterResults = function(data, callback) {
+    data.items.forEach(function(book, index) {
+        console.log(book.volumeInfo.title)
+        console.log(book.volumeInfo.authors)
+        console.log(book.volumeInfo.publisher)
+        console.log(index);
+        callback(data);
+    });
+}
 
 //Placeholder function to check other functions work properly
 var printIt = function(/*searchTerm*/) {
     console.log('App has finished');
 }
-
-
 /*
 //Asks user what book to save to the reading list
-function bookChoices(data) {
-    readline.question(`Which books would you like to save to your reading list? Type one of the numbers above. `, function(input) {
-        if (input >= 0 || input < 5) {
-        var book = data.items[input];
-        console.log(`You've chosen ${input}.`);
-        console.log(book.volumeInfo.title);
-        console.log(book.volumeInfo.authors);
-        console.log(book.volumeInfo.publisher);
-        } else {
-            console.log('Please enter a number from 0 to 4');
-        }
-       // readline.close();
-        saveBook(book);
-});
+function saveBook(data, callback) {
+    rl.question(`Which book do you want to save to your reading list? Type the number that corresponds to it. `, function(number) {
+        if (number != '' || number < 0 || number > 4) {
+            rl.question(`Please enter a number from 0 to 4. `, function(number) {
+                callback(number);
+            } else {
+                var book = data.items[number];
+                console.log(`You've chosen ${number}.`);
+                console.log(book.volumeInfo.title);
+                console.log(book.volumeInfo.authors);
+                console.log(book.volumeInfo.publisher);
+            });
+        };
+    });
 }
+
+
 
 /*
 
