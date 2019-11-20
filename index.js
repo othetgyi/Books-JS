@@ -42,9 +42,12 @@ var validateSearchTerm = function(searchTerm, callback){
     if (searchTerm !== '' && searchTerm !== null){
         console.log(`You're looking for ${searchTerm} books.`)
         } else {
-        console.log('Please enter one or more keywords for the books you\'re looking for.')
+        rl.question('Please enter one or more keywords for the books you\'re looking for.', function(searchTerm){
+            callback(searchTerm);
+        });
         }
-        callback(searchTerm)
+        
+       // getSearchTerm(searchTerm);
     }
 
 //Placeholder function to check other functions work properly
