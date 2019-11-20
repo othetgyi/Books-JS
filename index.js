@@ -17,7 +17,9 @@ require('dotenv').config();
 function main(){
     getSearchTerm(function(searchTerm){
         validateSearchTerm(searchTerm, function(searchTerm){
-            printIt(searchTerm);
+            callAPI(searchTerm, function(searchTerm){
+                printIt(searchTerm);
+            });
         });
     });
 }
@@ -32,7 +34,7 @@ var rl = readline.createInterface({
 
 //Asks what kind of book the user wants to look up
 var getSearchTerm = function(callback) {
-    rl.question('What books are you looking for? ', function(searchTerm) {
+    rl.question('What kinds of books are you looking for? ', function(searchTerm) {
         callback(searchTerm);
         });
 }
@@ -40,47 +42,40 @@ var getSearchTerm = function(callback) {
 //Validates user input 
 var validateSearchTerm = function(searchTerm, callback){
     if (searchTerm !== '' && searchTerm !== null){
-        console.log(`You're looking for ${searchTerm} books.`)
+        console.log(`Here is a list of five books on ${searchTerm}.`)
+        callback(searchTerm);
         } else {
         rl.question('Please enter one or more keywords for the books you\'re looking for.', function(searchTerm){
             callback(searchTerm);
         });
         }
-        
-       // getSearchTerm(searchTerm);
     }
 
-//Placeholder function to check other functions work properly
-var printIt = function(searchTerm) {
-    console.log(searchTerm);
-}
-/*
 //Calls Google books API with the search string and API key
-var callAPI = function(callback) {
-   
-    var key = process.env.GOOGLE_BOOKS_API; 
-    request('https://www.googleapis.com/books/v1/volumes?q=' + callback + '&maxResults=5' + '&key=' + key, { json: true }, (err, res, data) => {
-    
-  if (err) { 
+var callAPI = function(searchTerm, callback) {
+   var key = process.env.GOOGLE_BOOKS_API; 
+    request('https://www.googleapis.com/books/v1/volumes?q=' + searchTerm + '&maxResults=5' + '&key=' + key, { json: true }, (err, res, data) => {
+    if (err) { 
       console.log(err); 
       console.log('The API call has failed. Please try again.');
     } else {
-         console.log('callAPI is finished')
-  data.items.forEach(function(book, index) {
+    data.items.forEach(function(book, index) {
     console.log(book.volumeInfo.title)
     console.log(book.volumeInfo.authors)
     console.log(book.volumeInfo.publisher)
     console.log(index);
-  }); 
-    //bookChoices(data);
-//})
-callback();
+    callback(searchTerm);
+  });  
 }})};
 
 
+//Placeholder function to check other functions work properly
+var printIt = function(/*searchTerm*/) {
+    console.log('App has finished');
+}
+
 
 /*
-
 //Asks user what book to save to the reading list
 function bookChoices(data) {
     readline.question(`Which books would you like to save to your reading list? Type one of the numbers above. `, function(input) {
