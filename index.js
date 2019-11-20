@@ -16,7 +16,7 @@ require('dotenv').config();
 
 function main(){
     getSearchTerm(function(searchTerm){
-        validateSearchTerm(function(searchTerm){
+        validateSearchTerm(searchTerm, function(searchTerm){
             printIt(searchTerm);
         });
     });
@@ -31,21 +31,16 @@ var rl = readline.createInterface({
 });
 
 //Asks what kind of book the user wants to look up
-var getSearchTerm = function(searchTerm, callback) {
-    rl.question('What books are you looking for? ', function(searchTerm, callback) {
-        console.log(`You're looking for ${searchTerm} books.`);
-        console.log('Function getSearchTerm is finished.');
+var getSearchTerm = function(callback) {
+    rl.question('What books are you looking for? ', function(searchTerm) {
+        callback(searchTerm);
         });
-        callback(searchTerm);    
-    
 }
 
 //Validates user input 
 var validateSearchTerm = function(searchTerm, callback){
     if (searchTerm !== '' && searchTerm !== null){
-        console.log(searchTerm)
         console.log(`You're looking for ${searchTerm} books.`)
-        console.log('validateSearchTerm is finished')
         } else {
         console.log('Please enter one or more keywords for the books you\'re looking for.')
         }
