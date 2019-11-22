@@ -1,4 +1,5 @@
-//Issue 21/11: When I type a number in ressponse to query about what book to save, it keeps printing error message.
+//Issue 22/11: Line 121, validateBookNumber: always throws an error even when you put in the right number with parenthese around the numbers, if you take out the parentheses it lets too many things through and they are undefined.
+//Issue 2 Trouble passing book parameter to saveBooktoReadingList
 
 var request = require("request");
 var fs = require("fs");
@@ -19,18 +20,21 @@ function main() {
       callAPI(searchTerm, function(data) {
         filterResults(data, function(data) {
           getBookNumber(data, function(number) {
-            validateBookNumber(number, data, function(number)/* {
-              saveBookToReadingList(number, function(readingList)*/ {
-                printIt(number);
-              });
+            validateBookNumber(number, data, function(book) {
+              saveBookToReadingList(book, function(book) {
+                    
+                  printIt(number);
+                })
+               
+             
             });
           });
         });
       });
     });
-  }
-  //);
-//}
+  });
+
+}
 
 //Requires the readline module for taking user input
 var readline = require("readline");
@@ -79,7 +83,7 @@ var callAPI = function(searchTerm, callback) {
       "&key=" +
       key,
     { json: true },
-    (err, res, data) => {
+    function(err, res, data) {
       if (err) {
         console.log("The API call failed. Please try again.");
         throw err;
@@ -96,8 +100,8 @@ var filterResults = function(data, callback) {
     console.log(book.volumeInfo.authors);
     console.log(book.volumeInfo.publisher);
     console.log(index);
-    callback(data);
-  });
+    
+  });callback(data);
 };
 
 //Asks user what book to save to the reading list
@@ -116,40 +120,75 @@ var getBookNumber = function(number, callback, error) {
 
 //Validates book number input
 var validateBookNumber = function(number, data, callback) {
-   
-  if (number !== "" && (number >= 0 || number <= 4) && typeof number == "number" /* && 
-   /*number == "" || typeof !=== "number" || Number.isInteger(number) || number < 0 || number > 4*/) {
-    console.log('The number passes')
+
+var int = parseInt(number);
+  if (int >= 0 && int <= 4){
+   console.log('The number passes')
     var book = data.items[number];
     console.log(`You have chosen to save book number ${number}.`);
     console.log(book.volumeInfo.title);
     console.log(book.volumeInfo.authors);
     console.log(book.volumeInfo.publisher);
-    callback(number);
-    
-     // })} else if ()) {
-   //Whatever number you type in doesn't meet the criteria        
+    callback(book);
+       
   } else {
     rl.question("Please enter a number from 0 to 4. ", 
-        function(number) {
-            console.log('The number fails')
-      validateBookNumber(number, callback);
-  })};
+    function(number) {
+        console.log('The number fails')
+  validateBookNumber(number, data, callback);
+})
+    };
 }
-// //Saves selected book to a JSON file
-// var saveBookToReadingList = function(book) {
-//   var readingList = [];
-//   readingList.push(book);
-//   fs.writeFile(
-//     "readinglist.json",
-//     JSON.stringify(readingList),
-//     "utf8",
-//     function() {},
-//     callback(readingList);
-//   );
-//   //What can the app print out to the screen if the filesystem errors?
+// Saves selected book to a JSON file
+var saveBookToReadingList = function(book, callback) {
+ 
+ 
+  fs.readFile('readinglist.json', function (err, data){
+    //if file is not there start with empty list and add item
+    //if file is there, read current file, add to list
+    //if error reading file, let user know there was an error
+
+    if(err == null) {
+      var readinglist = JSON.parse(data)
+      readinglist.push(book)
+
+    
+   
+    } else if  (err.code ==="ENOENT") {
+      var readinglist = [];
   
-// }
+      readinglist.push(book)}
+       else {
+      throw err;
+    }
+    
+    fs.writeFile(
+      "readinglist.json",
+      JSON.stringify(readinglist),
+      "utf8", 
+
+      function(err) {
+        
+        if (err == null){
+          callback(book);
+  
+        }
+  
+       else if (err.code === "ENOENT"){
+          console.log('File not found.')
+          
+        } else {
+          throw err;
+        }
+      },
+      );
+  })
+  
+    
+    
+  
+  }
+
 
 //Placeholder function to check other functions work properly
 var printIt = function(/*searchTerm*/) {
@@ -162,23 +201,27 @@ var printIt = function(/*searchTerm*/) {
 // //Gives user option to view "Reading List"
 // function viewReadingList() {
 //     rl.question(`Do you want to view your reading list? Enter Y or N `, function(choiceInput) {
-//         if (choiceInput == 'Y' || choiceInput == 'y' || choiceInput == 'yes' || choiceInput == 'Yes') {
-//             console.log(`You have chosen to see your reading list.`);
-//             var bookData = fs.readFilesSync('readinglist.json');
-//             var readingList = JSON.parse(bookData);
-//             console.log(readingList);
-//         }   else if (choiceInput='N' || choiceInput == 'n' || choiceInput == 'no' || choiceInput == 'No' ) {
-//             rl.question(`Do you want to keep looking for books? Enter Y or No. `, function(choiceInput) {
-//                 if (choiceInput == 'Y' || choiceInput == 'y' || choiceInput == 'yes' || choiceInput == 'Yes') {
-//                     getSearchTerm();
-//                 }   else if (choiceInput='N' || choiceInput == 'n' || choiceInput == 'no' || choiceInput == 'No' ) {
-//                     console.log('Thank you for using the Google Books finder!')
-//                 }
-//        } else {
-//            console.log('Please enter Y or N');
-//        }
-//         readline.close();
-//     });
+    // function(choice) {
+    //     callback(choice);}
+//         
+//       
+//             
+
+// var validateChoice = function(choice, callback){
+    // if(choice.toLowerCase == "yes" || choice.toLowerCase == "y") {
+    //     console.log(`You have chosen to see your reading list.`);
+    //     callback(choice);
+    // } else if (choice.toLowerCase == "no" || choice.toLowerCase == "n"){
+    //     console.log('Thank you for using the Google Books finder!')
+    // } else {
+    //     console.log("An error has occurred.")
+    // }
+    
+     
+//                      
+//                      var bookData = fs.readFilesSync('readinglist.json');
+//                      var readingList = JSON.parse(bookData);
+//                      console.log(readingList);
 // }
 
 main();
