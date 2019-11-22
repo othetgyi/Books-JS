@@ -1,5 +1,4 @@
-//Issue 22/11: Line 121, validateBookNumber: always throws an error even when you put in the right number with parenthese around the numbers, if you take out the parentheses it lets too many things through and they are undefined.
-//Issue 2 Trouble passing book parameter to saveBooktoReadingList
+
 
 var request = require("request");
 var fs = require("fs");
@@ -23,8 +22,10 @@ function main() {
             validateBookNumber(number, data, function(book) {
               saveBookToReadingList(book, function(choice) {
                 getReadingListChoice(choice, function(choice){
-                  validateChoice(choice, function(choice){
-                    printIt(choice);
+                  validateChoice(choice, data, function(readinglist, data){
+                    printReadingList(readinglist, data);
+
+                    });
                   })
                   
                 })
@@ -38,7 +39,7 @@ function main() {
         });
       });
     });
-  });
+ 
 
 }
 
@@ -207,23 +208,35 @@ var getReadingListChoice = function(choice, callback, error) {
 var printIt = function(/*searchTerm*/) {
   console.log("App has finished");
 };
-            
 
-// var validateChoice = function(choice, callback){
-    // if(choice.toLowerCase == "yes" || choice.toLowerCase == "y") {
-    //     console.log(`You have chosen to see your reading list.`);
-    //     callback(choice);
-    // } else if (choice.toLowerCase == "no" || choice.toLowerCase == "n"){
-    //     console.log('Thank you for using the Google Books finder!')
-    // } else {
-    //     console.log("An error has occurred.")
-    // }
-    
-     
-//                      
-//                      var bookData = fs.readFilesSync('readinglist.json');
-//                      var readingList = JSON.parse(bookData);
-//                      console.log(readingList);
-// }
+
+var validateChoice = function(choice, callback){
+ 
+  console.log(choice)
+  if(choice == "yes" || choice == "y" || choice == "Yes" 
+
+|| choice == "y"  ) {
+        console.log(`Here is your reading list.`);
+        callback(choice);
+    } else if (choice == "no" || choice == "n" || choice== "No" 
+
+    || choice == "n" ){
+        console.log('Thank you for using the Google Books finder!')
+    } else {
+        console.log("An error has occurred.")
+    }
+  } 
+
+  var printReadingList = function(readinglist, data, callback) {
+    data.items.forEach(function(book, index) {
+      console.log(book.volumeInfo.title);
+      console.log(book.volumeInfo.authors);
+      console.log(book.volumeInfo.publisher);
+      console.log(index);
+      
+    });callback(readinglist, data);
+  };  
+
+
 
 main();
