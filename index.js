@@ -1,17 +1,6 @@
-
-
 var request = require("request");
 var fs = require("fs");
 require("dotenv").config();
-
-//1.) Ask what book user wants to look up
-//getUserInput(validateInput);
-//3.) Prints out 5 choices of books with author, title and publishing company
-// bookChoices();
-//4.) Program asks user which one to put on the bookshelf
-//savedBook();
-//5.) Program stores those books by pushing the new book onto the end of the array
-//viewReadingList();
 
 function main() {
   getSearchTerm(function(searchTerm) {
@@ -21,26 +10,18 @@ function main() {
           getBookNumber(data, function(number) {
             validateBookNumber(number, data, function(book) {
               saveBookToReadingList(book, function(choice) {
-                getReadingListChoice(choice, function(choice){
-                  validateChoice(choice, data, function(readinglist, data){
+                getReadingListChoice(choice, function(choice) {
+                  validateChoice(choice, data, function(readinglist, data) {
                     printReadingList(readinglist, data);
-
-                    });
-                  })
-                  
-                })
-                    
-                  
-                })
-               
-             
+                  });
+                });
+              });
             });
           });
         });
       });
     });
- 
-
+  });
 }
 
 //Requires the readline module for taking user input
@@ -107,8 +88,8 @@ var filterResults = function(data, callback) {
     console.log(book.volumeInfo.authors);
     console.log(book.volumeInfo.publisher);
     console.log(index);
-    
-  });callback(data);
+  });
+  callback(data);
 };
 
 //Asks user what book to save to the reading list
@@ -127,116 +108,95 @@ var getBookNumber = function(number, callback, error) {
 
 //Validates book number input
 var validateBookNumber = function(number, data, callback) {
-
-var int = parseInt(number);
-  if (int >= 0 && int <= 4){
-   
+  var int = parseInt(number);
+  if (int >= 0 && int <= 4) {
     var book = data.items[number];
     console.log(`You have chosen to save book number ${number}.`);
     console.log(book.volumeInfo.title);
     console.log(book.volumeInfo.authors);
     console.log(book.volumeInfo.publisher);
     callback(book);
-       
   } else {
-    rl.question("Please enter a number from 0 to 4. ", 
-    function(number) {
-        console.log('The number fails')
-  validateBookNumber(number, data, callback);
-})
-    };
-}
+    rl.question("Please enter a number from 0 to 4. ", function(number) {
+      console.log("The number fails");
+      validateBookNumber(number, data, callback);
+    });
+  }
+};
 // Saves selected book to a JSON file
 var saveBookToReadingList = function(book, callback) {
- 
- 
-  fs.readFile('readinglist.json', function (err, data){
-    
-    if(err == null) {
-      var readinglist = JSON.parse(data)
-      readinglist.push(book)
-
-    
-   
-    } else if  (err.code ==="ENOENT") {
+  fs.readFile("readinglist.json", function(err, data) {
+    if (err == null) {
+      var readinglist = JSON.parse(data);
+      readinglist.push(book);
+    } else if (err.code === "ENOENT") {
       var readinglist = [];
-  
-      readinglist.push(book)}
-       else {
+
+      readinglist.push(book);
+    } else {
       throw err;
     }
-    
+
     fs.writeFile(
       "readinglist.json",
       JSON.stringify(readinglist),
-      "utf8", 
+      "utf8",
 
       function(err) {
-        
-        if (err == null){
+        if (err == null) {
           callback(book);
-  
-        }
-  
-       else if (err.code === "ENOENT"){
-          console.log('File not found.')
-          
+        } else if (err.code === "ENOENT") {
+          console.log("File not found.");
         } else {
           throw err;
         }
-      },
-      );
-  })
-  
- 
-    
-  
-  }
-
-
+      }
+    );
+  });
+};
 
 // //Gives user option to view "Reading List"
 var getReadingListChoice = function(choice, callback, error) {
-    rl.question(`Do you want to view your reading list? Enter Y or N. `, function(choice) {
-            callback(choice);
-          },
-          function(error) {
-            console.log('An error has occurred.');
-          })
-}
-      //Placeholder function to check other functions work properly
+  rl.question(
+    `Do you want to view your reading list? Enter Y or N. `,
+    function(choice) {
+      callback(choice);
+    },
+    function(error) {
+      console.log("An error has occurred.");
+    }
+  );
+};
+//Placeholder function to check other functions work properly
 var printIt = function(/*searchTerm*/) {
   console.log("App has finished");
 };
 
+var validateChoice = function(choice, callback) {
+  console.log(choice);
+  if (choice == "yes" || choice == "y" || choice == "Yes" || choice == "y") {
+    console.log(`Here is your reading list.`);
+    callback(choice);
+  } else if (
+    choice == "no" ||
+    choice == "n" ||
+    choice == "No" ||
+    choice == "n"
+  ) {
+    console.log("Thank you for using the Google Books finder!");
+  } else {
+    console.log("An error has occurred.");
+  }
+};
 
-var validateChoice = function(choice, callback){
- 
-  console.log(choice)
-  if(choice == "yes" || choice == "y" || choice == "Yes" 
-
-|| choice == "y"  ) {
-        console.log(`Here is your reading list.`);
-        callback(choice);
-    } else if (choice == "no" || choice == "n" || choice== "No" 
-
-    || choice == "n" ){
-        console.log('Thank you for using the Google Books finder!')
-    } else {
-        console.log("An error has occurred.")
-    }
-  } 
-
-  var printReadingList = function(readinglist, data, callback) {
-    data.items.forEach(function(book, index) {
-      console.log(book.volumeInfo.title);
-      console.log(book.volumeInfo.authors);
-      console.log(book.volumeInfo.publisher);
-      console.log(index);
-      
-    });callback(readinglist, data);
-  };  
-
-
+var printReadingList = function(readinglist, data, callback) {
+  data.items.forEach(function(book, index) {
+    console.log(book.volumeInfo.title);
+    console.log(book.volumeInfo.authors);
+    console.log(book.volumeInfo.publisher);
+    console.log(index);
+  });
+  callback(readinglist, data);
+};
 
 main();
