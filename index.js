@@ -21,9 +21,15 @@ function main() {
         filterResults(data, function(data) {
           getBookNumber(data, function(number) {
             validateBookNumber(number, data, function(book) {
-              saveBookToReadingList(book, function(book) {
+              saveBookToReadingList(book, function(choice) {
+                getReadingListChoice(choice, function(choice){
+                  validateChoice(choice, function(choice){
+                    printIt(choice);
+                  })
+                  
+                })
                     
-                  printIt(number);
+                  
                 })
                
              
@@ -123,7 +129,7 @@ var validateBookNumber = function(number, data, callback) {
 
 var int = parseInt(number);
   if (int >= 0 && int <= 4){
-   console.log('The number passes')
+   
     var book = data.items[number];
     console.log(`You have chosen to save book number ${number}.`);
     console.log(book.volumeInfo.title);
@@ -144,10 +150,7 @@ var saveBookToReadingList = function(book, callback) {
  
  
   fs.readFile('readinglist.json', function (err, data){
-    //if file is not there start with empty list and add item
-    //if file is there, read current file, add to list
-    //if error reading file, let user know there was an error
-
+    
     if(err == null) {
       var readinglist = JSON.parse(data)
       readinglist.push(book)
@@ -184,28 +187,27 @@ var saveBookToReadingList = function(book, callback) {
       );
   })
   
-    
+ 
     
   
   }
 
 
-//Placeholder function to check other functions work properly
+
+// //Gives user option to view "Reading List"
+var getReadingListChoice = function(choice, callback, error) {
+    rl.question(`Do you want to view your reading list? Enter Y or N. `, function(choice) {
+            callback(choice);
+          },
+          function(error) {
+            console.log('An error has occurred.');
+          })
+}
+      //Placeholder function to check other functions work properly
 var printIt = function(/*searchTerm*/) {
   console.log("App has finished");
 };
-
-//add new book to it
-//save new list
-
-// //Gives user option to view "Reading List"
-// function viewReadingList() {
-//     rl.question(`Do you want to view your reading list? Enter Y or N `, function(choiceInput) {
-    // function(choice) {
-    //     callback(choice);}
-//         
-//       
-//             
+            
 
 // var validateChoice = function(choice, callback){
     // if(choice.toLowerCase == "yes" || choice.toLowerCase == "y") {
